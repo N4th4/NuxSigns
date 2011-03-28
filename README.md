@@ -13,4 +13,5 @@ Installation
 Commands
 --------
 
-There is only /sign [line] [text]
+* /sign [line] [text]
+* /sign clear [line]

@@ -33,31 +33,30 @@ public class NuxSigns extends JavaPlugin {
             Player senderP = (Player) sender;
             if (commandName.equalsIgnoreCase("Sign")) {
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.RED + "[NuxSigns] Usage : /Sign [line] [text]");
+                    help(sender);
                 } else {
-                    Block block = senderP.getTargetBlock(null, 5);
-                    if (block.getState() instanceof Sign) {
-                        Sign sign = (Sign) block.getState();
-                        int index = Integer.valueOf(args[0]).intValue();
-                        if (index > 0 && index < 5) {
+                    Sign sign = getSign(senderP);
+                    if (args[0].equalsIgnoreCase("clear")) {
+                        int index = getIndex(args[1], sender);
+                        if (index != -1) {
+                            sign.setLine(index - 1, "");
+                            sign.update();
+                        }
+                    } else {
+                        int index = getIndex(args[0], sender);
+                        if (index != -1) {
                             String string = "";
-                            for (int i=1; i<args.length; i++)
-                            {
+                            for (int i = 1; i < args.length; i++) {
                                 string = string.concat(args[i]).concat(" ");
                             }
                             string = string.substring(0, string.length() - 1);
-                            if (string.length() <= 15)
-                            {
-                                sign.setLine(index-1, string);
+                            if (string.length() <= 15) {
+                                sign.setLine(index - 1, string);
                                 sign.update();
                             } else {
                                 sender.sendMessage(ChatColor.RED + "[NuxSigns] String too long");
                             }
-                        } else {
-                            sender.sendMessage(ChatColor.RED + "[NuxSigns] Invalid line number");
                         }
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "[NuxSigns] You don't point a Sign");
                     }
                 }
             }
@@ -66,6 +65,32 @@ public class NuxSigns extends JavaPlugin {
             sender.sendMessage("[NuxSigns] Only commands in chat are supported");
             return true;
         }
+    }
+
+    private Sign getSign(Player player) {
+        Block block = player.getTargetBlock(null, 5);
+        if (block.getState() instanceof Sign) {
+            return (Sign) block.getState();
+        } else {
+            player.sendMessage(ChatColor.RED + "[NuxSigns] You don't point a Sign");
+            return null;
+        }
+    }
+
+    private int getIndex(String _index, CommandSender sender) {
+        int index = Integer.valueOf(_index).intValue();
+        if (index > 0 && index < 5) {
+            return index;
+        } else {
+            sender.sendMessage(ChatColor.RED + "[NuxSigns] Invalid line number");
+            return -1;
+        }
+    }
+
+    private void help(CommandSender sender) {
+        sender.sendMessage(ChatColor.AQUA + "Commands :");
+        sender.sendMessage(ChatColor.AQUA + "    /NuxSigns clear [line]");
+        sender.sendMessage(ChatColor.AQUA + "    /NuxSigns [line] [text]");
     }
 
     public boolean isDebugging(final Player player) {
