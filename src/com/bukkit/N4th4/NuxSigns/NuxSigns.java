@@ -45,6 +45,7 @@ public class NuxSigns extends JavaPlugin {
                             {
                                 string = string.concat(args[i]).concat(" ");
                             }
+                            string = string.substring(0, string.length() - 1);
                             if (string.length() <= 15)
                             {
                                 sign.setLine(index-1, string);
