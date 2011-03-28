@@ -1,0 +1,7 @@
+name: NuxSigns
+main: com.bukkit.N4th4.NuxSigns.NuxSigns
+version: 1.0
+commands:
+    sign:
+        description: All of the NuxSigns commands
+        usage: Command unrecognised by NuxSigns.
