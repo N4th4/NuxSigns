@@ -78,7 +78,11 @@ public class NuxSigns extends JavaPlugin {
     }
 
     private int getIndex(String _index, CommandSender sender) {
-        int index = Integer.valueOf(_index).intValue();
+        int index = -1;
+        try {
+             index = Integer.valueOf(_index).intValue();
+        } catch (NumberFormatException e){
+        }
         if (index > 0 && index < 5) {
             return index;
         } else {
