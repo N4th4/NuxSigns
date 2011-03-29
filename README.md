@@ -15,3 +15,5 @@ Commands
 
 * /sign [line] [text]
 * /sign clear [line]
+* /sign copy
+* /sign paste

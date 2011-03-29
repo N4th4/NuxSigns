@@ -1,6 +1,6 @@
 name: NuxSigns
 main: com.bukkit.N4th4.NuxSigns.NuxSigns
-version: 1.0
+version: 1.1
 commands:
     sign:
         description: All of the NuxSigns commands
