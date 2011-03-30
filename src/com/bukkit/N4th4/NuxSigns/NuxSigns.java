@@ -1,6 +1,7 @@
 package com.bukkit.N4th4.NuxSigns;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
@@ -15,9 +16,25 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class NuxSigns extends JavaPlugin {
     private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
     private final Hashtable<String, String[]> ht = new Hashtable<String, String[]>();
+    private final HashSet< Byte > tMaterials = new HashSet< Byte >();
 
     public NuxSigns() {
         NSLogger.initialize();
+        tMaterials.add((byte) 0); // Air
+        tMaterials.add((byte) 6); // Sapling
+        tMaterials.add((byte) 8); // Water
+        tMaterials.add((byte) 9); // Water
+        tMaterials.add((byte) 37); // Yellow Flower
+        tMaterials.add((byte) 38); // Red Flower
+        tMaterials.add((byte) 50); // Torch
+        tMaterials.add((byte) 51); // Fire
+        tMaterials.add((byte) 55); // Redstone
+        tMaterials.add((byte) 66); // Minecart Track
+        tMaterials.add((byte) 75); // Redstone Torch
+        tMaterials.add((byte) 76); // Redstone Torch
+        tMaterials.add((byte) 78); // Snow
+        tMaterials.add((byte) 93); // Diode
+        tMaterials.add((byte) 94); // Diode
     }
 
     public void onEnable() {
@@ -96,7 +113,7 @@ public class NuxSigns extends JavaPlugin {
     }
 
     private Sign getSign(Player player) {
-        Block block = player.getTargetBlock(null, 5);
+        Block block = player.getTargetBlock(tMaterials, 5);
         if (block.getState() instanceof Sign) {
             return (Sign) block.getState();
         } else {
