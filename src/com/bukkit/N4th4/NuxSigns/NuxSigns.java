@@ -34,53 +34,54 @@ public class NuxSigns extends JavaPlugin {
         if (sender instanceof Player) {
             Player senderP = (Player) sender;
             if (commandName.equalsIgnoreCase("Sign")) {
-                if (args.length == 0 ) {
+                if (args.length == 0) {
                     help(sender);
                 } else {
                     Sign sign = getSign(senderP);
-                    if (args[0].equalsIgnoreCase("clear")) {
-                        if (args.length != 2) {
-                            sender.sendMessage(ChatColor.RED + "[NuxSigns] Usage : /NuxSigns clear [line]");
-                        }
-                        else {
-                            int index = getIndex(args[1], sender);
-                            if (index != -1) {
-                                sign.setLine(index - 1, "");
-                                sign.update();
-                            }
-                        }
-                    } else if (args[0].equalsIgnoreCase("copy")) {
-                        String name = senderP.getName();
-                        String[] lines = sign.getLines();
-                        ht.put(name, lines);
-                        sender.sendMessage(ChatColor.GREEN + "[NuxSigns] Sign copied succefully");
-                    } else if (args[0].equalsIgnoreCase("paste")) {
-                        String name = senderP.getName();
-                        if (ht.containsKey(name)) {
-                            String[] lines =ht.get(name);
-                            for (int i=0;i<lines.length;i++) {
-                                sign.setLine(i, lines[i]);
-                            }
-                            sign.update();
-                        } else {
-                            sender.sendMessage(ChatColor.RED + "[NuxSigns] \"Use /NuxSigns copy\" before");
-                        }
-                    } else {
-                        if (args.length < 2) {
-                            sender.sendMessage(ChatColor.RED + "[NuxSigns] Usage : /NuxSigns [line] [text]");
-                        } else {
-                            int index = getIndex(args[0], sender);
-                            if (index != -1) {
-                                String string = "";
-                                for (int i = 1; i < args.length; i++) {
-                                    string = string.concat(args[i]).concat(" ");
-                                }
-                                string = string.substring(0, string.length() - 1);
-                                if (string.length() <= 15) {
-                                    sign.setLine(index - 1, string);
+                    if (sign != null) {
+                        if (args[0].equalsIgnoreCase("clear")) {
+                            if (args.length != 2) {
+                                sender.sendMessage(ChatColor.RED + "[NuxSigns] Usage : /NuxSigns clear [line]");
+                            } else {
+                                int index = getIndex(args[1], sender);
+                                if (index != -1) {
+                                    sign.setLine(index - 1, "");
                                     sign.update();
-                                } else {
-                                    sender.sendMessage(ChatColor.RED + "[NuxSigns] String too long");
+                                }
+                            }
+                        } else if (args[0].equalsIgnoreCase("copy")) {
+                            String name = senderP.getName();
+                            String[] lines = sign.getLines();
+                            ht.put(name, lines);
+                            sender.sendMessage(ChatColor.GREEN + "[NuxSigns] Sign copied succefully");
+                        } else if (args[0].equalsIgnoreCase("paste")) {
+                            String name = senderP.getName();
+                            if (ht.containsKey(name)) {
+                                String[] lines = ht.get(name);
+                                for (int i = 0; i < lines.length; i++) {
+                                    sign.setLine(i, lines[i]);
+                                }
+                                sign.update();
+                            } else {
+                                sender.sendMessage(ChatColor.RED + "[NuxSigns] \"Use /NuxSigns copy\" before");
+                            }
+                        } else {
+                            if (args.length < 2) {
+                                sender.sendMessage(ChatColor.RED + "[NuxSigns] Usage : /NuxSigns [line] [text]");
+                            } else {
+                                int index = getIndex(args[0], sender);
+                                if (index != -1) {
+                                    String string = "";
+                                    for (int i = 1; i < args.length; i++) {
+                                        string = string.concat(args[i]).concat(" ");
+                                    }
+                                    string = string.substring(0, string.length() - 1);
+                                    if (string.length() <= 15) {
+                                        sign.setLine(index - 1, string);
+                                        sign.update();
+                                    } else {
+                                        sender.sendMessage(ChatColor.RED + "[NuxSigns] String too long");
+                                    }
                                 }
                             }
                         }
@@ -99,7 +100,7 @@ public class NuxSigns extends JavaPlugin {
         if (block.getState() instanceof Sign) {
             return (Sign) block.getState();
         } else {
-            player.sendMessage(ChatColor.RED + "[NuxSigns] You don't point a Sign");
+            player.sendMessage(ChatColor.RED + "[NuxSigns] You don't point a sign");
             return null;
         }
     }
