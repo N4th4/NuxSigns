@@ -58,7 +58,7 @@ public class NuxSigns extends JavaPlugin {
                     if (sign != null) {
                         if (args[0].equalsIgnoreCase("clear")) {
                             if (args.length != 2) {
-                                sender.sendMessage(ChatColor.RED + "[NuxSigns] Usage : /NuxSigns clear [line]");
+                                sender.sendMessage(ChatColor.RED + "[NuxSigns] Usage : /sign clear [line]");
                             } else {
                                 int index = getIndex(args[1], sender);
                                 if (index != -1) {
@@ -80,11 +80,11 @@ public class NuxSigns extends JavaPlugin {
                                 }
                                 sign.update();
                             } else {
-                                sender.sendMessage(ChatColor.RED + "[NuxSigns] \"Use /NuxSigns copy\" before");
+                                sender.sendMessage(ChatColor.RED + "[NuxSigns] \"Use /sign copy\" before");
                             }
                         } else {
                             if (args.length < 2) {
-                                sender.sendMessage(ChatColor.RED + "[NuxSigns] Usage : /NuxSigns [line] [text]");
+                                sender.sendMessage(ChatColor.RED + "[NuxSigns] Usage : /sign [line] [text]");
                             } else {
                                 int index = getIndex(args[0], sender);
                                 if (index != -1) {
