@@ -10,8 +10,12 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import de.diddiz.LogBlock.Consumer;
+import de.diddiz.LogBlock.LogBlock;
 
 import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
@@ -21,6 +25,7 @@ public class NuxSigns extends JavaPlugin {
     private final Hashtable<String, String[]> ht          = new Hashtable<String, String[]>();
     private final HashSet<Byte>               tMaterials  = new HashSet<Byte>();
     private PermissionManager                 permissions = null;
+    private Consumer                          lbconsumer  = null;
 
     public NuxSigns() {
         NSLogger.initialize();
@@ -46,6 +51,14 @@ public class NuxSigns extends JavaPlugin {
             permissions = PermissionsEx.getPermissionManager();
         } else {
             NSLogger.severe("PermissionsEx not found. Disabling");
+            this.getServer().getPluginManager().disablePlugin(this);
+        }
+
+        Plugin plugin = this.getServer().getPluginManager().getPlugin("LogBlock");
+        if (plugin != null) {
+            lbconsumer = ((LogBlock) plugin).getConsumer();
+        } else {
+            NSLogger.severe("LogBlock not found. Disabling");
             this.getServer().getPluginManager().disablePlugin(this);
         }
 
@@ -75,8 +88,10 @@ public class NuxSigns extends JavaPlugin {
                             } else {
                                 int index = getIndex(args[1], sender);
                                 if (index != -1) {
+                                    lbconsumer.queueSignBreak(senderP.getName(), sign);
                                     sign.setLine(index - 1, "");
                                     sign.update();
+                                    lbconsumer.queueSignPlace(senderP.getName(), sign);
                                 }
                             }
                         } else if (args[0].equalsIgnoreCase("copy")) {
@@ -94,11 +109,13 @@ public class NuxSigns extends JavaPlugin {
                             } else {
                                 String name = senderP.getName();
                                 if (ht.containsKey(name)) {
+                                    lbconsumer.queueSignBreak(name, sign);
                                     String[] lines = ht.get(name);
                                     for (int i = 0; i < lines.length; i++) {
                                         sign.setLine(i, lines[i]);
                                     }
                                     sign.update();
+                                    lbconsumer.queueSignPlace(name, sign);
                                 } else {
                                     sender.sendMessage(ChatColor.RED + "[NuxSigns] \"Use /sign copy\" before");
                                 }
@@ -117,8 +134,10 @@ public class NuxSigns extends JavaPlugin {
                                     }
                                     string = string.substring(0, string.length() - 1);
                                     if (string.length() <= 15) {
+                                        lbconsumer.queueSignBreak(senderP.getName(), sign);
                                         sign.setLine(index - 1, string);
                                         sign.update();
+                                        lbconsumer.queueSignPlace(senderP.getName(), sign);
                                     } else {
                                         sender.sendMessage(ChatColor.RED + "[NuxSigns] String too long");
                                     }
