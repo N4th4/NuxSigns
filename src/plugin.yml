@@ -1,6 +1,8 @@
 name: NuxSigns
 main: com.bukkit.N4th4.NuxSigns.NuxSigns
-version: 1.1
+version: 1.2
+depend:
+    - PermissionsEx
 commands:
     sign:
         description: All of the NuxSigns commands

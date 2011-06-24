@@ -13,10 +13,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import ru.tehkode.permissions.PermissionManager;
+import ru.tehkode.permissions.bukkit.PermissionsEx;
+
 public class NuxSigns extends JavaPlugin {
-    private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
-    private final Hashtable<String, String[]> ht = new Hashtable<String, String[]>();
-    private final HashSet< Byte > tMaterials = new HashSet< Byte >();
+    private final HashMap<Player, Boolean>    debugees    = new HashMap<Player, Boolean>();
+    private final Hashtable<String, String[]> ht          = new Hashtable<String, String[]>();
+    private final HashSet<Byte>               tMaterials  = new HashSet<Byte>();
+    private PermissionManager                 permissions = null;
 
     public NuxSigns() {
         NSLogger.initialize();
@@ -38,6 +42,13 @@ public class NuxSigns extends JavaPlugin {
     }
 
     public void onEnable() {
+        if (this.getServer().getPluginManager().isPluginEnabled("PermissionsEx")) {
+            permissions = PermissionsEx.getPermissionManager();
+        } else {
+            NSLogger.severe("PermissionsEx not found. Disabling");
+            this.getServer().getPluginManager().disablePlugin(this);
+        }
+
         PluginDescriptionFile pdfFile = this.getDescription();
         NSLogger.info(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
     }
@@ -59,6 +70,8 @@ public class NuxSigns extends JavaPlugin {
                         if (args[0].equalsIgnoreCase("clear")) {
                             if (args.length != 2) {
                                 sender.sendMessage(ChatColor.RED + "[NuxSigns] Usage : /sign clear [line]");
+                            } else if (!permissions.has(senderP, "nuxsigns.clear")) {
+                                sender.sendMessage(ChatColor.RED + "[NuxSigns] Permission denied");
                             } else {
                                 int index = getIndex(args[1], sender);
                                 if (index != -1) {
@@ -67,24 +80,34 @@ public class NuxSigns extends JavaPlugin {
                                 }
                             }
                         } else if (args[0].equalsIgnoreCase("copy")) {
-                            String name = senderP.getName();
-                            String[] lines = sign.getLines();
-                            ht.put(name, lines);
-                            sender.sendMessage(ChatColor.GREEN + "[NuxSigns] Sign copied succefully");
-                        } else if (args[0].equalsIgnoreCase("paste")) {
-                            String name = senderP.getName();
-                            if (ht.containsKey(name)) {
-                                String[] lines = ht.get(name);
-                                for (int i = 0; i < lines.length; i++) {
-                                    sign.setLine(i, lines[i]);
-                                }
-                                sign.update();
+                            if (!permissions.has(senderP, "nuxsigns.copy")) {
+                                sender.sendMessage(ChatColor.RED + "[NuxSigns] Permission denied");
                             } else {
-                                sender.sendMessage(ChatColor.RED + "[NuxSigns] \"Use /sign copy\" before");
+                                String name = senderP.getName();
+                                String[] lines = sign.getLines();
+                                ht.put(name, lines);
+                                sender.sendMessage(ChatColor.GREEN + "[NuxSigns] Sign copied succefully");
+                            }
+                        } else if (args[0].equalsIgnoreCase("paste")) {
+                            if (!permissions.has(senderP, "nuxsigns.paste")) {
+                                sender.sendMessage(ChatColor.RED + "[NuxSigns] Permission denied");
+                            } else {
+                                String name = senderP.getName();
+                                if (ht.containsKey(name)) {
+                                    String[] lines = ht.get(name);
+                                    for (int i = 0; i < lines.length; i++) {
+                                        sign.setLine(i, lines[i]);
+                                    }
+                                    sign.update();
+                                } else {
+                                    sender.sendMessage(ChatColor.RED + "[NuxSigns] \"Use /sign copy\" before");
+                                }
                             }
                         } else {
                             if (args.length < 2) {
                                 sender.sendMessage(ChatColor.RED + "[NuxSigns] Usage : /sign [line] [text]");
+                            } else if (!permissions.has(senderP, "nuxsigns.use")) {
+                                sender.sendMessage(ChatColor.RED + "[NuxSigns] Permission denied");
                             } else {
                                 int index = getIndex(args[0], sender);
                                 if (index != -1) {
