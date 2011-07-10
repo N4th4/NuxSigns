@@ -14,17 +14,17 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.nijiko.permissions.PermissionHandler;
+import com.nijikokun.bukkit.Permissions.Permissions;
+
 import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
-
-import ru.tehkode.permissions.PermissionManager;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 public class NuxSigns extends JavaPlugin {
     private final HashMap<Player, Boolean>    debugees    = new HashMap<Player, Boolean>();
     private final Hashtable<String, String[]> ht          = new Hashtable<String, String[]>();
     private final HashSet<Byte>               tMaterials  = new HashSet<Byte>();
-    private PermissionManager                 permissions = null;
+    private PermissionHandler                 permissions = null;
     private Consumer                          lbconsumer  = null;
 
     public NuxSigns() {
@@ -47,12 +47,7 @@ public class NuxSigns extends JavaPlugin {
     }
 
     public void onEnable() {
-        if (this.getServer().getPluginManager().isPluginEnabled("PermissionsEx")) {
-            permissions = PermissionsEx.getPermissionManager();
-        } else {
-            NSLogger.severe("PermissionsEx not found. Disabling");
-            this.getServer().getPluginManager().disablePlugin(this);
-        }
+        setupPermissions();
 
         Plugin plugin = this.getServer().getPluginManager().getPlugin("LogBlock");
         if (plugin != null) {
@@ -152,6 +147,21 @@ public class NuxSigns extends JavaPlugin {
             sender.sendMessage("[NuxSigns] Only commands in chat are supported");
             return true;
         }
+    }
+    
+    private void setupPermissions() {
+    	if (permissions != null) {
+            return;
+        }
+        
+        Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
+        
+        if (permissionsPlugin == null) {
+            NSLogger.severe("Permissions not found");
+            return;
+        }
+        
+        permissions = ((Permissions) permissionsPlugin).getHandler();
     }
 
     private Sign getSign(Player player) {
