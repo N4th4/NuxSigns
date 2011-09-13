@@ -1,7 +1,29 @@
 name: NuxSigns
-main: com.bukkit.N4th4.NuxSigns.NuxSigns
-version: 1.3
+version: 1.4
+author: N4th4
+main: net.n4th4.bukkit.nuxsigns.NuxSigns
+
 commands:
     sign:
         description: All of the NuxSigns commands
         usage: Command unrecognised by NuxSigns.
+permissions:
+    nuxsigns.*:
+        description: Give access to all NuxSigns commands
+        children:
+            nuxsigns.clear: true
+            nuxsigns.copy: true
+            nuxsigns.paste: true
+            nuxsigns.use: true
+    nuxsigns.clear:
+        description: Allow you to clear a sign
+        default: op
+    nuxsigns.copy:
+        description: Allow you to copy a sign
+        default: op
+    nuxsigns.paste:
+        description: Allow you to paste a sign
+        default: op
+    nuxsigns.use:
+        description: Allow you to edit a sign
+        default: op

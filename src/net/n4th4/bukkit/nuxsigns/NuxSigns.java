@@ -1,8 +1,8 @@
-package com.bukkit.N4th4.NuxSigns;
+package net.n4th4.bukkit.nuxsigns;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -14,21 +14,16 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
-
 import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
 
 public class NuxSigns extends JavaPlugin {
-    private final HashMap<Player, Boolean>    debugees    = new HashMap<Player, Boolean>();
-    private final Hashtable<String, String[]> ht          = new Hashtable<String, String[]>();
-    private final HashSet<Byte>               tMaterials  = new HashSet<Byte>();
-    private PermissionHandler                 permissions = null;
-    private Consumer                          lbconsumer  = null;
+    private final Hashtable<String, String[]> ht         = new Hashtable<String, String[]>();
+    private final HashSet<Byte>               tMaterials = new HashSet<Byte>();
+    private Consumer                          lbconsumer = null;
+    public final Logger                       log        = this.getServer().getLogger();
 
     public NuxSigns() {
-        NSLogger.initialize();
         tMaterials.add((byte) 0); // Air
         tMaterials.add((byte) 6); // Sapling
         tMaterials.add((byte) 8); // Water
@@ -47,18 +42,16 @@ public class NuxSigns extends JavaPlugin {
     }
 
     public void onEnable() {
-        setupPermissions();
-
         Plugin plugin = this.getServer().getPluginManager().getPlugin("LogBlock");
         if (plugin != null) {
             lbconsumer = ((LogBlock) plugin).getConsumer();
         } else {
-            NSLogger.severe("LogBlock not found. Disabling");
+            log.severe("[NuxSigns] LogBlock not found. Disabling");
             this.getServer().getPluginManager().disablePlugin(this);
         }
 
         PluginDescriptionFile pdfFile = this.getDescription();
-        NSLogger.info(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
+        log.info("[NuxSigns]" + pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
     }
 
     public void onDisable() {
@@ -78,7 +71,7 @@ public class NuxSigns extends JavaPlugin {
                         if (args[0].equalsIgnoreCase("clear")) {
                             if (args.length != 2) {
                                 sender.sendMessage(ChatColor.RED + "[NuxSigns] Usage : /sign clear [line]");
-                            } else if (!permissions.has(senderP, "nuxsigns.clear")) {
+                            } else if (!senderP.hasPermission("nuxsigns.clear")) {
                                 sender.sendMessage(ChatColor.RED + "[NuxSigns] Permission denied");
                             } else {
                                 int index = getIndex(args[1], sender);
@@ -90,7 +83,7 @@ public class NuxSigns extends JavaPlugin {
                                 }
                             }
                         } else if (args[0].equalsIgnoreCase("copy")) {
-                            if (!permissions.has(senderP, "nuxsigns.copy")) {
+                            if (!senderP.hasPermission("nuxsigns.copy")) {
                                 sender.sendMessage(ChatColor.RED + "[NuxSigns] Permission denied");
                             } else {
                                 String name = senderP.getName();
@@ -99,7 +92,7 @@ public class NuxSigns extends JavaPlugin {
                                 sender.sendMessage(ChatColor.GREEN + "[NuxSigns] Sign copied succefully");
                             }
                         } else if (args[0].equalsIgnoreCase("paste")) {
-                            if (!permissions.has(senderP, "nuxsigns.paste")) {
+                            if (!senderP.hasPermission("nuxsigns.paste")) {
                                 sender.sendMessage(ChatColor.RED + "[NuxSigns] Permission denied");
                             } else {
                                 String name = senderP.getName();
@@ -118,7 +111,7 @@ public class NuxSigns extends JavaPlugin {
                         } else {
                             if (args.length < 2) {
                                 sender.sendMessage(ChatColor.RED + "[NuxSigns] Usage : /sign [line] [text]");
-                            } else if (!permissions.has(senderP, "nuxsigns.use")) {
+                            } else if (!senderP.hasPermission("nuxsigns.use")) {
                                 sender.sendMessage(ChatColor.RED + "[NuxSigns] Permission denied");
                             } else {
                                 int index = getIndex(args[0], sender);
@@ -147,21 +140,6 @@ public class NuxSigns extends JavaPlugin {
             sender.sendMessage("[NuxSigns] Only commands in chat are supported");
             return true;
         }
-    }
-    
-    private void setupPermissions() {
-    	if (permissions != null) {
-            return;
-        }
-        
-        Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
-        
-        if (permissionsPlugin == null) {
-            NSLogger.severe("Permissions not found");
-            return;
-        }
-        
-        permissions = ((Permissions) permissionsPlugin).getHandler();
     }
 
     private Sign getSign(Player player) {
@@ -194,17 +172,5 @@ public class NuxSigns extends JavaPlugin {
         sender.sendMessage(ChatColor.AQUA + "    /sign [line] [text]");
         sender.sendMessage(ChatColor.AQUA + "    /sign copy");
         sender.sendMessage(ChatColor.AQUA + "    /sign paste");
-    }
-
-    public boolean isDebugging(final Player player) {
-        if (debugees.containsKey(player)) {
-            return debugees.get(player);
-        } else {
-            return false;
-        }
-    }
-
-    public void setDebugging(final Player player, final boolean value) {
-        debugees.put(player, value);
     }
 }
