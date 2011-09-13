@@ -21,7 +21,7 @@ public class NuxSigns extends JavaPlugin {
     private final Hashtable<String, String[]> ht         = new Hashtable<String, String[]>();
     private final HashSet<Byte>               tMaterials = new HashSet<Byte>();
     private Consumer                          lbconsumer = null;
-    public final Logger                       log        = this.getServer().getLogger();
+    public Logger                             log;
 
     public NuxSigns() {
         tMaterials.add((byte) 0); // Air
@@ -42,6 +42,8 @@ public class NuxSigns extends JavaPlugin {
     }
 
     public void onEnable() {
+        log = this.getServer().getLogger();
+
         Plugin plugin = this.getServer().getPluginManager().getPlugin("LogBlock");
         if (plugin != null) {
             lbconsumer = ((LogBlock) plugin).getConsumer();
