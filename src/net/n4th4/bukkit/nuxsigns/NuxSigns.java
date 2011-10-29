@@ -10,8 +10,11 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.diddiz.LogBlock.Consumer;
@@ -51,6 +54,9 @@ public class NuxSigns extends JavaPlugin {
             log.severe("[NuxSigns] LogBlock not found. Disabling");
             this.getServer().getPluginManager().disablePlugin(this);
         }
+        
+        PluginManager pm = getServer().getPluginManager();
+        pm.registerEvent(Event.Type.PLAYER_INTERACT, new NSPlayerListener(), Priority.Normal, this);
 
         PluginDescriptionFile pdfFile = this.getDescription();
         log.info("[NuxSigns]" + pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
