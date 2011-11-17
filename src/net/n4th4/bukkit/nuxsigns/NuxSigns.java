@@ -129,6 +129,11 @@ public class NuxSigns extends JavaPlugin {
                                         string = string.concat(args[i]).concat(" ");
                                     }
                                     string = string.substring(0, string.length() - 1);
+                                    if (string.toLowerCase().contains("[train]") || string.toLowerCase().contains("[bank]")) {
+                                        sender.sendMessage(ChatColor.RED + "[NuxSigns] You can't do that");
+                                        return true;
+                                    }
+                                    
                                     if (string.length() <= 15) {
                                         lbconsumer.queueSignBreak(senderP.getName(), sign);
                                         sign.setLine(index - 1, string);
