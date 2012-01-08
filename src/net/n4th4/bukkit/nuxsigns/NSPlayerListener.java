@@ -9,7 +9,7 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class NSPlayerListener extends PlayerListener {
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getPlayer().hasPermission("nuxsigns.use") && event.getPlayer().getItemInHand().getType() == Material.AIR) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getPlayer().hasPermission("nuxsigns.use") && event.getPlayer().getItemInHand().getType() == Material.FEATHER) {
             if (event.getClickedBlock().getState() instanceof Sign) {
                 ((SpoutPlayer) event.getPlayer()).openSignEditGUI((Sign) event.getClickedBlock().getState());
             }
